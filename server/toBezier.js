@@ -28,26 +28,31 @@ function toEquations(segments) {
             // line
             case "L":
                 equations.push(toLinear([currPoint, ...points]));
+                currPoint = points[points.length - 1];
                 break;
             // horizontal line
             case "H":
                 endPoint = [...currPoint];
                 endPoint[0] = parseFloat(tokens[1]);
                 equations.push(toLinear([currPoint, endPoint]));
+                currPoint = points[points.length - 1];
                 break;
             // vertical line
             case "V":
                 endPoint = [...currPoint];
                 endPoint[1] = parseFloat(tokens[2]);
                 equations.push(toLinear([currPoint, endPoint]));
+                currPoint = points[points.length - 1];
                 break;
             // cubic curve
             case "C":
                 equations.push(toCubic([currPoint, ...points]));
+                currPoint = points[points.length - 1];
                 break;
             // quadratic curve
             case "Q":
                 equations.push(toQuadratic([currPoint, ...points]));
+                currPoint = points[points.length - 1];
                 break;
             // go to start
             case "Z":

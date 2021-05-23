@@ -17,6 +17,7 @@ const dList = frameNames.map((frameName) => {
 });
 
 const everything = dList.map((d) => toEquations(toSegments(d)));
+let lastRequest = 0;
 
 let frame = 0;
 app.get("/", (req, res) => {
@@ -25,6 +26,12 @@ app.get("/", (req, res) => {
 
 app.get("/frame", (req, res) => {
     res.send(everything[frame]);
+    console.log(`Request for frame ${frame}`);
+    if (lastRequest !== 0) {
+        const d = new Date().getTime();
+        console.log(`Took ${d - lastRequest}ms`);
+        lastRequest = d;
+    }
     frame++;
 });
 
