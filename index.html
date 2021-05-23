@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Desmos Animating</title>
+</head>
+<body style="height: 100vh; width: 100%;">
+    <div id="calculator" style="width: 100%; height: 100%;"></div></body>
+    <script src="https://www.desmos.com/api/v1.6/calculator.js?apiKey=dcb31709b452b1cf9dc26972add0fda6"></script>
+    <script> 
+        const elt = document.getElementById('calculator');
+        const calculator = Desmos.GraphingCalculator(elt);
+        calculator.setMathBounds({
+            left: 0,
+            right: 10,
+            bottom: 0,
+            top: 10
+        });
+        let frame = 1; // currently unused
+        function renderFrame() {
+            fetch("http://localhost:8000/frame")
+                .then(res => res.json())
+                .then(res => {
+                    res.forEach((equation, index) => {
+                        calculator.setExpression({id: (index).toString(), latex: equation, color: "#2d70b3"})
+                    });
+                    frame++;
+                    renderFrame();
+                })
+                .catch(() => alert("Rendering done"))
+        }
+    </script>
+</html>

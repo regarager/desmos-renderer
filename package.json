@@ -1,0 +1,16 @@
+{
+  "name": "desmos-renderer",
+  "version": "1.0.0",
+  "main": "server/index.js",
+  "license": "MIT",
+  "scripts": {
+    "start": "node server/traceFrame.js && node server/index.js"
+  },
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.9",
+    "express": "^4.17.1",
+    "jimp": "^0.16.1",
+    "potrace": "^2.1.8"
+  },
+  "devDependencies": {}
+}
