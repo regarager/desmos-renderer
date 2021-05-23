@@ -20,7 +20,12 @@ const traceFrame = (fileName) => {
 const traceFrames = (inDir = process.cwd() + "/in/") => {
     const frames = fs
         .readdirSync(path.resolve(process.cwd(), inDir))
-        .filter((file) => file.endsWith(".png") || file.endsWith(".jpg"));
+        .filter(
+            (file) =>
+                file.endsWith(".png") ||
+                file.endsWith(".jpg") ||
+                file.endsWith(".jpeg")
+        );
     frames.forEach((frame) => {
         jimp.read(`${process.cwd()}/in/${frame}`, (err, data) => {
             if (err) throw err;

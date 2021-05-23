@@ -161,7 +161,17 @@ function toSegments(d) {
  * @returns {number} Converted to make graph work i guess?
  */
 function parseCoord(coord, index) {
-    if (index === 0) return coord / 100;
-    else return (1000 - coord) / 100;
+    if (index === 0) return coord;
+    else return 1000 - coord;
 }
-module.exports = { toEquations, toSegments };
+
+let height = 0;
+/**
+ * @param {number} h
+ * @returns {void}
+ */
+function setHeight(h) {
+    height = h;
+}
+
+module.exports = { setHeight, toEquations, toSegments };
