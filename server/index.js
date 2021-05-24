@@ -19,13 +19,12 @@ const dList = frameNames.map((frameName) => {
 const everything = dList.map((d) => toEquations(toSegments(d)));
 let lastRequest = 0;
 
-let frame = 0;
-
 app.get("/", (req, res) => {
     res.sendFile(process.cwd() + "/index.html");
 });
 
-app.get("/frame", (req, res) => {
+app.get("/frame/:fId", (req, res) => {
+    const frame = parseInt(req.params.fId);
     res.send(everything[frame]);
     console.log(`Request for frame ${frame}`);
     const d = new Date().getTime();
@@ -33,7 +32,6 @@ app.get("/frame", (req, res) => {
         console.log(`Took ${d - lastRequest}ms`);
     }
     lastRequest = d;
-    frame++;
 });
 
 app.listen(process.env.PORT || 8000, () => {

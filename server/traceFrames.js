@@ -1,7 +1,8 @@
 const potrace = require("potrace");
 const fs = require("fs");
 const path = require("path");
-const jimp = require("jimp");
+const gm = require("gm").subClass({ imageMagick: true });
+
 /**
  * @param {string} fileName
  */
@@ -27,10 +28,10 @@ const traceFrames = (inDir = process.cwd() + "/in/") => {
                 file.endsWith(".jpeg")
         );
     frames.forEach((frame) => {
-        jimp.read(`${process.cwd()}/in/${frame}`, (err, data) => {
-            if (err) throw err;
-            data.contrast(1).write(`${process.cwd()}/in/${frame}`);
-        });
+        const framePath = `${process.cwd()}/in/${frame}`;
+        gm(framePath)
+            .edge(1)
+            .write(framePath, () => {});
         traceFrame(frame);
     });
 };

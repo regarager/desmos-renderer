@@ -27,20 +27,21 @@
     let frame = 1; // currently unused
     const msPerFrame = 2000; // recommended to be 2000
 
-    function renderFrame(lastEquationLength, lastFrameTimeStamp) {
-        fetch("http://localhost:8000/frame")
+   function renderFrame(lastEquationLength = 0, lastFrameTimeStamp = new Date().getTime(), frame = 0) {
+        fetch("http://localhost:8000/frame/" + frame)
             .then(res => res.json())
             .then(res => {
                 res.forEach((equation, index) => {
                     calculator.setExpression({ id: (index).toString(), latex: equation, color: "#2d70b3" })
-                    length++;
                 });
                 frame++;
                 setTimeout(() => {
-                    for (let i = lastEquationLength; i > res.length; i--) {
+                    /*
+                    for (let i = res.length - 1; i < lastEquationLength + 1; i++) {
                         calculator.removeExpression({ id: i.toString() });
                     }
-                    renderFrame(res.length, new Date().getTime());
+                    */
+                    renderFrame(res.length, new Date().getTime(), frame + 1);
                 }, lastFrameTimeStamp + msPerFrame - new Date().getTime());
             })
             .catch(() => {
@@ -50,5 +51,4 @@
             })
     }
 </script>
-
 </html>
