@@ -20,6 +20,7 @@ const everything = dList.map((d) => toEquations(toSegments(d)));
 let lastRequest = 0;
 
 let frame = 0;
+
 app.get("/", (req, res) => {
     res.sendFile(process.cwd() + "/index.html");
 });

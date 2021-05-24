@@ -20,3 +20,11 @@
 ## Example
 
 ![Desmos in Desmos](github/logo.png)
+
+## Important Notices
+
+If you put an image in `in/` and run `server/traceFrame.js` multiple times, there may be strange problems with some edges being removed by `jimp` \(library used for increasing contrast\)
+Before:
+![Before](github/before.png)
+After:
+![After](github/after.png)

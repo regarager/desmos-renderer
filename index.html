@@ -1,43 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Desmos Animating</title>
-    <link rel="icon" type="image/png" href="./github/logo.png"/>
+    <link rel="icon" type="image/png" href="./github/logo.png" />
     <!--idk why this icon doesnt work but whatever-->
 </head>
+
 <body style="height: 100vh; width: 100%;">
-    <div id="calculator" style="width: 100%; height: 100%;"></div></body>
-    <script src="https://www.desmos.com/api/v1.6/calculator.js?apiKey=dcb31709b452b1cf9dc26972add0fda6"></script>
-    <script> 
-        const elt = document.getElementById('calculator');
-        const calculator = Desmos.GraphingCalculator(elt);
-        calculator.setMathBounds({
-            left: 0,
-            right: 1000,
-            bottom: 0,
-            top: 1000
-        });
-        let frame = 1; // currently unused
-        function renderFrame(lastEquationLength) {
-            fetch("http://localhost:8000/frame")
-                .then(res => res.json())
-                .then(res => {
-                    res.forEach((equation, index) => {
-                        calculator.setExpression({id: (index).toString(), latex: equation, color: "#2d70b3"})
-                        length++;
-                    });
-                    frame++;
-                    setTimeout(() => {
-                        for (let i = lastEquationLength; i > res.length; i--) {
-                            calculator.removeExpression({id: i.toString()});
-                        }
-                        renderFrame(res.length);
-                    },1000);
-                })
-                .catch(() => alert("Rendering done"))
-        }
-    </script>
+    <div id="calculator" style="width: 100%; height: 100%;"></div>
+</body>
+<script src="https://www.desmos.com/api/v1.6/calculator.js?apiKey=dcb31709b452b1cf9dc26972add0fda6"></script>
+<script>
+    const elt = document.getElementById('calculator');
+    const calculator = Desmos.GraphingCalculator(elt);
+    calculator.setMathBounds({
+        left: 0,
+        right: 1000,
+        bottom: 0,
+        top: 1000
+    });
+
+    let frame = 1; // currently unused
+    const msPerFrame = 2000; // recommended to be 2000
+
+    function renderFrame(lastEquationLength, lastFrameTimeStamp) {
+        fetch("http://localhost:8000/frame")
+            .then(res => res.json())
+            .then(res => {
+                res.forEach((equation, index) => {
+                    calculator.setExpression({ id: (index).toString(), latex: equation, color: "#2d70b3" })
+                    length++;
+                });
+                frame++;
+                setTimeout(() => {
+                    for (let i = lastEquationLength; i > res.length; i--) {
+                        calculator.removeExpression({ id: i.toString() });
+                    }
+                    renderFrame(res.length, new Date().getTime());
+                }, lastFrameTimeStamp + msPerFrame - new Date().getTime());
+            })
+            .catch(() => {
+                setTimeout(() => {
+                    alert("Rendering done");
+                }, 3000);
+            })
+    }
+</script>
+
 </html>

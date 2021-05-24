@@ -4,7 +4,7 @@
   "main": "server/index.js",
   "license": "MIT",
   "scripts": {
-    "start": "node server/traceFrame.js && node server/index.js"
+    "start": "node server/traceFrame.js && node ."
   },
   "dependencies": {
     "cheerio": "^1.0.0-rc.9",
