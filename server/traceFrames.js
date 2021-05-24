@@ -12,6 +12,7 @@ const traceFrame = (fileName) => {
     potrace.trace(`./in/${fileName}`, (err, svg) => {
         if (err) throw err;
         fs.writeFileSync(`${process.cwd()}/out/${fName}.svg`, svg);
+        console.log(`Traced frame at in/${fileName}`);
     });
 };
 
