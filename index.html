@@ -23,28 +23,37 @@
         bottom: 0,
         top: 1000
     });
+    const blank = calculator.getState();
+    const msPerFrame = 1000; // recommended to be 1000, this is the time you give desmos to load all of the equations
 
-    let frame = 1; // currently unused
-    const msPerFrame = 2000; // recommended to be 2000
+    calculator.setDefaultState(blank);
 
    function renderFrame(lastEquationLength = 0, lastFrameTimeStamp = new Date().getTime(), frame = 0) {
         fetch("http://localhost:8000/frame/" + frame)
             .then(res => res.json())
             .then(res => {
+                calculator.setState(blank);
                 res.forEach((equation, index) => {
                     calculator.setExpression({ id: (index).toString(), latex: equation, color: "#2d70b3" })
                 });
-                frame++;
                 setTimeout(() => {
-                    /*
-                    for (let i = res.length - 1; i < lastEquationLength + 1; i++) {
-                        calculator.removeExpression({ id: i.toString() });
-                    }
-                    */
-                    renderFrame(res.length, new Date().getTime(), frame + 1);
-                }, lastFrameTimeStamp + msPerFrame - new Date().getTime());
+                    const frameData = calculator.screenshot();
+                    const body = {
+                        data: frameData.toString()
+                    };
+                    fetch("http://localhost:8000/result/" + frame, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify(body)
+                    });
+                    renderFrame(res.length, new Date().getTime(), frame + 1)             
+                }, msPerFrame);
+                
             })
-            .catch(() => {
+            .catch((err) => {
+                console.log(err);
                 setTimeout(() => {
                     alert("Rendering done");
                 }, 3000);

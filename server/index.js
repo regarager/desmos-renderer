@@ -5,6 +5,8 @@ const fs = require("fs");
 const { resolve } = require("path");
 const app = express();
 
+app.use(express.json());
+
 const frameNames = fs
     .readdirSync(resolve(process.cwd(), "./out/"))
     .filter((file) => file.endsWith(".svg"));
@@ -32,6 +34,16 @@ app.get("/frame/:fId", (req, res) => {
         console.log(`Took ${d - lastRequest}ms`);
     }
     lastRequest = d;
+});
+
+app.post("/result/:fId", (req, res) => {
+    const imgData = req.body.data.replace(/^data:image\/\w+;base64,/, "");
+    const frameName = `${process.cwd()}/result/frame${req.params.fId}.png`;
+    fs.writeFile(frameName, imgData, { encoding: "base64" }, (err) => {
+        if (err) throw err;
+        console.log(`Saved frame at ${frameName}`);
+    });
+    res.send({});
 });
 
 app.listen(process.env.PORT || 8000, () => {
