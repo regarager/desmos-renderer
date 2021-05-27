@@ -21,9 +21,10 @@
 
 ## `config.js` Guide
 
-| Field Name          | Default Value | Explanation        |
-| ------------------- | ------------- | ------------------ |
-| `frameNumberLength` | 4             | Length of frame id |
+| Field Name          | Default Value | Explanation                                    |
+| ------------------- | ------------- | ---------------------------------------------- |
+| `frameNumberLength` | 4             | Length of frame id                             |
+| `edgeSize`          | 4             | Width of edge for `gm` edge detection function |
 
 ## Useful Commands with `ffmpeg`
 

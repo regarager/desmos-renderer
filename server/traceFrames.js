@@ -2,6 +2,7 @@ const potrace = require("potrace");
 const fs = require("fs");
 const path = require("path");
 const gm = require("gm").subClass({ imageMagick: true });
+const { edgeSize } = require("../config");
 
 /**
  * @param {string} fileName
@@ -31,7 +32,7 @@ const traceFrames = (inDir = process.cwd() + "/in/") => {
     frames.forEach((frame) => {
         const framePath = `${process.cwd()}/in/${frame}`;
         gm(framePath)
-            .edge(1)
+            .edge(edgeSize)
             .write(framePath, () => {});
         traceFrame(frame);
     });
