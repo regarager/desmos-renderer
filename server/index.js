@@ -4,6 +4,19 @@ const cheerio = require("cheerio");
 const fs = require("fs");
 const { resolve } = require("path");
 const app = express();
+const { frameNumberLength } = require("../config");
+
+/**
+ * @param {string} str
+ * @param {number} length
+ */
+function addZeros(str, length) {
+    let res = str;
+    for (let i = str.length; i < length; i++) {
+        res = "0" + res;
+    }
+    return res;
+}
 
 app.use(express.json());
 
@@ -38,7 +51,10 @@ app.get("/frame/:fId", (req, res) => {
 
 app.post("/result/:fId", (req, res) => {
     const imgData = req.body.data.replace(/^data:image\/\w+;base64,/, "");
-    const frameName = `${process.cwd()}/result/frame${req.params.fId}.png`;
+    const frameName = `${process.cwd()}/result/frame${addZeros(
+        req.params.fId,
+        frameNumberLength
+    )}.png`;
     fs.writeFile(frameName, imgData, { encoding: "base64" }, (err) => {
         if (err) throw err;
         console.log(`Saved frame at ${frameName}`);
