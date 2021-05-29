@@ -31,6 +31,7 @@
         fetch("http://localhost:8000/frame/" + frame)
             .then(res => res.json())
             .then(res => {
+                console.log(`Frame: ${frame}`);
                 calculator.setState(blank);
                 res.forEach((equation, index) => {
                     calculator.setExpression({ id: (index).toString(), latex: equation, color: "#2d70b3" })
