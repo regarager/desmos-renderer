@@ -1,10 +1,32 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
 <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Desmos SVG Renderer</title>
 </head>
-<div id="calculator" style="width: 600px; height: 400px;"></div>
-<script src="https://www.desmos.com/api/v1.7/calculator.js?apiKey=dcb31709b452b1cf9dc26972add0fda6"></script>
+
+<body style="height: 100vh; width: 100%;">
+    <div id="calculator" style="width: 100%; height: 100%;"></div>
+</body>
+<script src="https://www.desmos.com/api/v1.6/calculator.js?apiKey=dcb31709b452b1cf9dc26972add0fda6"></script>
 <script>
-  var elt = document.getElementById('calculator');
-  var calculator = Desmos.GraphingCalculator(elt);
-  calculator.setExpression({ id: 'graph1', latex: 'y=x^2' });
+    const elt = document.getElementById('calculator');
+    const calculator = Desmos.GraphingCalculator(elt);
+
+    // change bounds to be whatever is sent by the server by parsing svg size
+    calculator.setMathBounds({
+        left: 0,
+        right: 1000,
+        bottom: 0,
+        top: 1000
+    });
+
+    const blank = calculator.getState();
+
+    calculator.setDefaultState(blank);
 </script>
+</html>
