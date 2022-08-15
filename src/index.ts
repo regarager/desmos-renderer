@@ -12,7 +12,7 @@ const port = process.env.PORT || 8080;
 server.use(express.json({limit: "50mb"}));
 server.use(express.urlencoded({limit: "50mb", extended: true, parameterLimit: 50000}));
 
-server.post("/screenshot", (req, _) => {
+server.post("/screenshot", (req) => {
     const {data, frame} = req.body;
     const img = data.replace(/^data:image\/\w+;base64,/, "");
 
