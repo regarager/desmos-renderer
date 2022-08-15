@@ -48,6 +48,20 @@
                 expressions.push({type: "expression", id: i.toString(), latex: frame[i], color: "#000000"});
             }
             calculator.setExpressions(expressions);
+            calculator.asyncScreenshot((screenshot) => {
+                fetch("/screenshot", {
+                    method: "post",
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+
+                    body: JSON.stringify({
+                        data: screenshot,
+                        frame: f
+                    })
+                })
+            });
         }
     })
 

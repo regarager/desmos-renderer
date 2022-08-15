@@ -1,12 +1,11 @@
 import potrace from "potrace";
 import { mkdir, readdirSync, lstatSync } from "fs";
 import path from "path";
-import { file } from "./util";
+import { file, inDir } from "./util";
 import { parseSVG } from "./svgParser";
 import {promisify} from "util";
 
-const inDir = file("./renders/input/");
-// const outDir = file("./renders/output");
+
 
 const trace: (arg1: string) => Promise<string> = promisify(potrace.trace);
 
