@@ -1,12 +1,12 @@
 import potrace from "potrace";
-import fs, { mkdir, readdirSync, lstatSync } from "fs";
+import { mkdir, readdirSync, lstatSync } from "fs";
 import path from "path";
 import { file } from "./util";
 import { parseSVG } from "./svgParser";
 import {promisify} from "util";
 
 const inDir = file("./renders/input/");
-const outDir = file("./renders/output");
+// const outDir = file("./renders/output");
 
 const trace: (arg1: string) => Promise<string> = promisify(potrace.trace);
 
@@ -23,15 +23,6 @@ function getFiles() {
         return [];
     }
 }
-
-// /**
-//  * @param {string} filePath Name of the file
-//  */
-// export async function traceFrame(filePath: string) {
-//     const svg = await trace(filePath);
-    
-//     return parseSVG(svg);
-// }
 
 export async function traceFrames() {
     const frames = getFiles()

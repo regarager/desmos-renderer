@@ -1,6 +1,6 @@
 import cheerio from "cheerio";
 
-interface Curve {
+export interface Curve {
     command: string
     arguments: number[]
 }
