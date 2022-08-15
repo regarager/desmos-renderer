@@ -15,7 +15,7 @@
 <script src="https://www.desmos.com/api/v1.6/calculator.js?apiKey=dcb31709b452b1cf9dc26972add0fda6"></script>
 <script>
     const elt = document.getElementById('calculator');
-    const calculator = Desmos.GraphingCalculator(elt);
+    const calculator = Desmos.GraphingCalculator(elt, {expressions: false});
 
     // change bounds to be whatever is sent by the server by parsing svg size
     const blank = calculator.getState();
@@ -24,11 +24,26 @@
 
     fetch("/graphs").then(async res => {
         const text = await res.text();
-        const data = JSON.parse(text); // string[][]
-        for (let f = 0; f < data.length; f++) {
-            const frame = data[f];
-            console.log(frame);
-            const expressions = []
+        const data = JSON.parse(text); // {width: number, height: number, equations: string[][]}
+        const {equations} = data;
+        
+        const ratio = elt.offsetWidth / elt.offsetHeight;
+
+        // weird stuff
+        const width = data.height * ratio
+        const height = data.height
+        const distToEdges = (width - data.width) / 2; // distance from l/r edge of image to l/r of screen
+
+        calculator.setMathBounds({
+            left: -distToEdges,
+            right: width - distToEdges,
+            bottom: 0,
+            top: height
+        });
+
+        for (let f = 0; f < equations.length; f++) {
+            const frame = equations[f];
+            const expressions = [];
             for (let i = 0; i < frame.length; i++) {
                 expressions.push({type: "expression", id: i.toString(), latex: frame[i], color: "#000000"});
             }

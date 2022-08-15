@@ -3,6 +3,8 @@ import cheerio from "cheerio";
 export interface Curve {
     command: string
     arguments: number[]
+    width: number;
+    height: number;
 }
 
 /**
@@ -11,6 +13,7 @@ export interface Curve {
  */
 export function parseSVG(text: string): Curve[] {
     const svg = cheerio.load(text);
+    const width = parseFloat(svg("svg").attr("width") || "1000");
     const height = parseFloat(svg("svg").attr("height") || "1000");
     const d = svg("svg").children().first().attr("d");
 
@@ -27,7 +30,7 @@ export function parseSVG(text: string): Curve[] {
     for (const segment of segments) {
         if (commands.includes(segment)) {
             if (!firstTime) {
-                const curve: Curve = {command: currCmd, arguments: currArgs};
+                const curve: Curve = {command: currCmd, arguments: currArgs, width: width, height: height};
                 argsList.push(curve);
             }
             currCmd = segment;
