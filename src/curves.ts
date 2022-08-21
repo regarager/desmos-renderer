@@ -35,13 +35,21 @@ export function toEquations(curves: Curve[]) {
             }
             break;
         case "C":
-            equations.push(toCubic([...currPoint, ...points]));
+            if (points.length < 8) {
+                equations.push(toCubic([...currPoint, ...points]));
+            } else {
+                equations.push(toCubic(points));
+            }
             currPoint[0] = points[points.length - 2];
             currPoint[1] = points[points.length - 1];
             break;
             // quadratic curve
         case "Q":
-            equations.push(toQuadratic([...currPoint, ...points]));
+            if (points.length < 6) {
+                equations.push(toQuadratic([...currPoint, ...points]));
+            } else {
+                equations.push(toQuadratic(points));
+            }
             currPoint[0] = points[points.length - 2];
             currPoint[1] = points[points.length - 1];
             break;
