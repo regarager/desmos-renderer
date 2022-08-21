@@ -16,13 +16,14 @@ let equations: string[][];
 server.use(express.json({limit: "50mb"}));
 server.use(express.urlencoded({limit: "50mb", extended: true, parameterLimit: 50000}));
 
-server.post("/screenshot", (req) => {
+server.post("/screenshot", (req, res) => {
     const {data, frame} = req.body;
     const img = data.replace(/^data:image\/\w+;base64,/, "");
 
     const fileName = file(`/renders/output/frame${frame}.png`);
     writeFileSync(fileName, img, {encoding: "base64"});
     console.log("Wrote image to " + fileName);
+    res.send("Success!");
 });
 
 server.get("/data", (_, res) => {
@@ -32,7 +33,7 @@ server.get("/data", (_, res) => {
 server.get("/frames/:frame", (req, res) => {
     const frame = parseInt(req.params.frame);
     res.send(equations[frame]);
-    console.log(`Request for frame ${frame}`);
+    console.log(`Request for frame ${frame + 1}`);
 });
 
 server.get("/graphs", async (_, res) => {
