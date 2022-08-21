@@ -8,6 +8,10 @@ import { file } from "./util";
 const server = express();
 const port = process.env.PORT || 8080;
 
+let width: number;
+let height: number;
+let equations: string[][];
+
 // middleware
 server.use(express.json({limit: "50mb"}));
 server.use(express.urlencoded({limit: "50mb", extended: true, parameterLimit: 50000}));
@@ -21,21 +25,30 @@ server.post("/screenshot", (req) => {
     console.log("Wrote image to " + fileName);
 });
 
+server.get("/data", (_, res) => {
+    res.send(JSON.stringify({width: width, height: height, count: equations.length}));
+});
+
+server.get("/frames/:frame", (req, res) => {
+    const frame = parseInt(req.params.frame);
+    res.send(equations[frame]);
+    console.log(`Request for frame ${frame}`);
+});
+
 server.get("/graphs", async (_, res) => {
-    const leCurves = await traceFrames();
-    const equations = (leCurves).map((curves: Curve[]) => toEquations(curves));
-    const body = {
-        width: leCurves[0][0].width,
-        height: leCurves[0][0].height,
-        equations: equations
-    };
-    res.send(JSON.stringify(body));
+    res.send(JSON.stringify(equations));
 });
 
 server.get("/", (_, res) => {
     res.sendFile(file("./public/index.html"));
 });
 
-server.listen(port, () => {
+server.listen(port, async () => {
+    const leCurves = await traceFrames();
+    const eqs = (leCurves).map((curves: Curve[]) => toEquations(curves));
+    width = leCurves[0][0].width;
+    height = leCurves[0][0].height;
+    equations = eqs;
+
     console.log("Server started");
 });
