@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Desmos SVG Renderer</title>
+</head>
+
+<body style="height: 100vh; width: 100%;">
+    <div id="calculator" style="width: 100%; height: 100%;"></div>
+</body>
+<script src="https://www.desmos.com/api/v1.7/calculator.js?apiKey=dcb31709b452b1cf9dc26972add0fda6"></script>
+<script>
+    const elt = document.getElementById('calculator');
+    const calculator = Desmos.GraphingCalculator(elt, {expressions: false});
+
+    // change bounds to be whatever is sent by the server by parsing svg size
+    const blank = calculator.getState();
+
+    calculator.setDefaultState(blank);
+
+    let takeScreenshot = () => {
+        return new Promise((resolve, reject) => {
+            calculator.asyncScreenshot((screenshot) => resolve(screenshot));
+        })
+    }
+
+    // for await
+    async function main() {
+        const data = JSON.parse(await (await fetch("/data")).text());
+        const {width, height, count} = data;
+
+        console.log(`Starting render (${width}x${height}, ${count} frames)`);
+
+        const ratio = elt.offsetWidth / elt.offsetHeight;
+
+        // actual width/height used
+        const w = height * ratio;
+        const h = height;
+        const distToEdges = (width - data.width) / 2; // distance from l/r edge of image to l/r of screen
+        
+        calculator.setMathBounds({
+            left: -distToEdges,
+            right: width - distToEdges,
+            bottom: 0,
+            top: height
+        });
+
+        for (let i = 0; i < count; i++) {
+            console.log(`Starting render of frame ${i + 1}/${count}`);
+            const equations = JSON.parse(await (await fetch(`/frames/${i}`)).text());
+            const expressions = [];
+
+            for (let j = 0; j < equations.length; j++) {
+                expressions.push({type: "expression", id: j.toString(), latex: equations[j], color: "#000000"});
+            }
+
+            calculator.setExpressions(expressions);
+
+            console.log(`Screenshotting frame ${i + 1}/${count}`);
+
+            const screenshot = await takeScreenshot();
+
+            console.log("Screenshot taken, sending to server");
+
+            await fetch("/screenshot", {
+                method: "post",
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+
+                body: JSON.stringify({
+                    data: screenshot,
+                    frame: i
+                })
+            })
+
+            console.log(`Screenshotted frame ${i + 1}/${count}`);
+        }
+    }
+
+    main();
+</script>
+</html>

@@ -44,6 +44,10 @@ server.get("/", (_, res) => {
     res.sendFile(file("./public/index.html"));
 });
 
+server.get("/autostart", (_, res) => {
+    res.sendFile(file("./public/autostart.html"));
+});
+
 server.listen(port, async () => {
     const leCurves = await traceFrames();
     const eqs = (leCurves).map((curves: Curve[]) => toEquations(curves));
