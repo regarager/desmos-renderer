@@ -39,13 +39,13 @@
         // actual width/height used
         const w = height * ratio;
         const h = height;
-        const distToEdges = (width - data.width) / 2; // distance from l/r edge of image to l/r of screen
+        const distToEdges = (w - data.width) / 2; // distance from l/r edge of image to l/r of screen
         
         calculator.setMathBounds({
             left: -distToEdges,
-            right: width - distToEdges,
+            right: w - distToEdges,
             bottom: 0,
-            top: height
+            top: h
         });
 
         for (let i = 0; i < count; i++) {
